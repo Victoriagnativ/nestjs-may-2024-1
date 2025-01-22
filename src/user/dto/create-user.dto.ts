@@ -1,28 +1,53 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
+import { Transform } from 'class-transformer';
+import { Match } from '../../common/decorator/password.decorator';
+import { IsCityAllowed } from '../../common/decorator/city.decorator';
 
 export class CreateUserDto {
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
   @ApiProperty({ required: true })
+  @Transform(({ value }) => value.trim())
   email: string;
+  @IsOptional()
   @ApiProperty({ required: true })
   firstName: string;
   @ApiProperty()
   lastName: string;
+  @IsCityAllowed({
+    groups: ['Lviv', 'Kharkiv', 'Odessa'],
+    message: 'Місто не дозволене!',
+  })
+  city: string;
   @ApiProperty()
   password: string;
   @ApiProperty()
   age: number;
 }
-export class AccountResponseDto {
-  @ApiProperty({ required: true })
-  email: string;
-  @ApiProperty({ required: true })
-  firstName: string;
-  @ApiProperty()
-  lastName: string;
-  @ApiProperty()
+export class PersonalDto {
+  dateBirth: string;
+  lang: string;
+}
+export class ForgotPassword {
+  @IsString()
+  @Matches(' /\\s*;\\s*/')
   password: string;
-  @ApiProperty()
-  age: number;
+  @IsNotEmpty()
+  @Match('password', { message: 'Password must match' })
+  repeatPassword: string;
+}
+export class AccountResponseDto extends IntersectionType(
+  CreateUserDto,
+  PersonalDto,
+) {
   @ApiProperty()
   status: boolean;
 }
