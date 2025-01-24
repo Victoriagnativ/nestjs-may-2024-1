@@ -59,3 +59,12 @@ export class UserQueryDto {
   page: string;
 }
 export class UpdateUserDto {}
+
+export class SingUpDto {
+  @ApiProperty()
+  id: string;
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  createdAt: Date;
+}

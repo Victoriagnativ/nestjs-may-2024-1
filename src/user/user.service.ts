@@ -4,9 +4,16 @@ import {
   UpdateUserDto,
   UserQueryDto,
 } from './dto/create-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../datebase/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
   private userList = [];
   create(createUserDto: CreateUserDto) {
     const index = new Date().valueOf();
