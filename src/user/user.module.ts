@@ -5,9 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../datebase/entities/user.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]), // Імпортуємо сутність User
-  ],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
   providers: [UserService],
 })

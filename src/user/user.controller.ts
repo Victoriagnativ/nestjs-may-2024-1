@@ -14,9 +14,9 @@ import {
   AccountResponseDto,
   CreateUserDto,
   UpdateUserDto,
-  UserQueryDto,
 } from './dto/create-user.dto';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BaseQueryDto } from '../common/validator/base.query.validator';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -28,7 +28,7 @@ export class UserController {
   }
   @ApiQuery({ name: 'limit', example: 10 })
   @Get('/list')
-  findAll(@Query() query: UserQueryDto) {
+  findAll(@Query() query: BaseQueryDto) {
     return this.userService.findAll(query);
   }
 

@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  UserQueryDto,
-} from './dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../datebase/entities/user.entity';
 import { Repository } from 'typeorm';
+import { BaseQueryDto } from '../common/validator/base.query.validator';
+import { paginateRawAndEntities } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class UserService {
@@ -24,8 +22,28 @@ export class UserService {
     return createUserDto[0];
   }
 
-  findAll(data: UserQueryDto) {
-    return this.userList;
+  async findAll(query?: BaseQueryDto): Promise<any> {
+    const option = {
+      page: query?.page || 1,
+      limit: query?.limit || 10,
+    };
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    queryBuilder
+      .select('email,"firstName" id, age,"createdAt"')
+      .where({ isActive: false });
+    if (query.search) {
+      queryBuilder.andWhere(`LOWER("firstName") LIKE %${query.search}`);
+    }
+    const [pagination, rawEntities] = await paginateRawAndEntities(
+      queryBuilder,
+      option,
+    );
+    return {
+      page: pagination.meta.currentPage,
+      pages: pagination.meta.totalItems,
+      countItems: pagination.meta.totalItems,
+      entities: rawEntities,
+    };
   }
 
   findOne(id: string) {

@@ -28,6 +28,7 @@ export class CreateUserDto {
   })
   city: string;
   @ApiProperty()
+  @IsString()
   password: string;
   @ApiProperty()
   age: number;
@@ -67,4 +68,10 @@ export class SingUpDto {
   email: string;
   @ApiProperty()
   createdAt: Date;
+}
+export class UserItemDto extends SingUpDto {
+  @ApiProperty()
+  firstName: string;
+  @ApiProperty()
+  age: number;
 }
