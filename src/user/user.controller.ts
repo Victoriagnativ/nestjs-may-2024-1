@@ -29,6 +29,7 @@ export class UserController {
   @ApiQuery({ name: 'limit', example: 10 })
   @Get('/list')
   findAll(@Query() query: BaseQueryDto) {
+    console.log('Query parameters:', query);
     return this.userService.findAll(query);
   }
 

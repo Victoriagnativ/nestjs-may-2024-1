@@ -5,7 +5,7 @@ export class BaseQueryDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsNumberString()
-  sort: string;
+  sort?: string;
 
   @ApiProperty({ required: false, default: 'ASC', enum: ['ASC', 'DESC'] })
   @IsEnum(['ASC', 'DESC'])
@@ -23,5 +23,5 @@ export class BaseQueryDto {
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  search: string;
+  search?: string;
 }

@@ -27,20 +27,33 @@ export class UserService {
       page: query?.page || 1,
       limit: query?.limit || 10,
     };
+
     const queryBuilder = this.userRepository.createQueryBuilder('user');
     queryBuilder
-      .select('email,"firstName" id, age,"createdAt"')
-      .where({ isActive: false });
+      .select([
+        'user.email',
+        'user.firstName',
+        'user.id',
+        'user.age',
+        'user.createdAt',
+      ])
+      .where('user.isActive = :isActive', { isActive: true });
+
     if (query.search) {
-      queryBuilder.andWhere(`LOWER("firstName") LIKE %${query.search}`);
+      queryBuilder.andWhere('LOWER(user.firstName) LIKE :search', {
+        search: `%${query.search.toLowerCase()}%`,
+      });
     }
+
+    console.log('Pagination options:', option);
+
     const [pagination, rawEntities] = await paginateRawAndEntities(
       queryBuilder,
       option,
     );
     return {
       page: pagination.meta.currentPage,
-      pages: pagination.meta.totalItems,
+      pages: pagination.meta.totalPages,
       countItems: pagination.meta.totalItems,
       entities: rawEntities,
     };
